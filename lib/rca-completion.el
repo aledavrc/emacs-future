@@ -49,7 +49,6 @@
 ;; Optional: Add tempel-eglot bridge
 (use-package eglot-tempel
   :ensure t
-  :defer t
   ;; :preface (eglot-tempel-mode)
   :init
   (eglot-tempel-mode t))

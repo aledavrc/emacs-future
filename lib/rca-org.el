@@ -12,8 +12,7 @@
          (org-mode . variable-pitch-mode)
          (org-mode . visual-line-mode)
          (org-agenda-mode . hl-line-mode)
-         (org-babel-after-execute . org-redisplay-inline-images)
-         (org-babel-after-execute . org-toggle-inline-images))
+         (org-babel-after-execute . org-redisplay-inline-images))
   :custom
   (org-agenda-files `(,(concat sync-directory "archive/agenda/")))
   (org-log-done 'time)
@@ -33,10 +32,6 @@
                           (800 1000 1200 1400 1600 1800 2000 2200)
                           "......"
                           "-----------------"))
-  (modus-themes-headings '((1 . (1.5)) (2 . (1.3))
-                           (agenda-date . (1.3))
-                           (agenda-structure . (1.8))
-                           (t . (1.1))))
   (org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
   :config
@@ -153,15 +148,20 @@
   :after org
   :bind (("C-z C-c" . org-capture)
          ("C-z C-l" . org-store-link))
+  ;; `org-capture-templates' (:custom) runs before :init, and use-package
+  ;; wraps :preface in `eval-and-compile' (evaluated eagerly at load), so
+  ;; only the variable expanded inside the templates via `,' belongs here.
+  ;; The file names below are stored as symbols and resolved by
+  ;; `org-capture' at capture time, so they stay in :init.
+  :preface
+  (defvar my/org-created-property
+    "\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
   :init
   (defvar my/org-academic-agenda  (concat (car org-agenda-files) "academic.org"))
   (defvar my/org-personal-agenda (concat (car org-agenda-files) "personal.org"))
   (defvar my/org-idea-notebook (concat sync-directory "archive/notebooks/ideas.org"))
   (defvar my/org-dream-diary (concat sync-directory "archive/notebooks/dreams.org"))
   
-  (defvar my/org-created-property
-    "\n:PROPERTIES:\n:CREATED: [%<%Y-%m-%d %a %H:%M>]\n:END:")
-
   (defvar my/org-file-link
     "\n\nArchivo: [[%L][%f]]")
   
@@ -280,8 +280,6 @@ are exported to a filename derived from the headline text."
   ;; To preview only environments, set it to '(block edit-special) instead
   (setq org-latex-preview-live t)
   
-  (setq org-latex-preview-live t)
-
   ;; More immediate live-previews -- the default delay is 1 second
   (setq org-latex-preview-live-debounce 0.25)
   (defun my/org-latex-preview-uncenter (ov)

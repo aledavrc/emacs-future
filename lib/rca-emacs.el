@@ -3,6 +3,15 @@
 
 (use-package emacs
   :ensure nil
+  :preface
+  ;; Defined here so that `recentf-exclude' (a :custom below, which runs
+  ;; before :config) can reference it.
+  (defvar history-excluded-filetypes
+    '(".*gz" ".*pdf" "bookmarks" "recentf" "init.el"
+      ".*gitignore" "early-init.el" ".*log" ".*png"
+      ".*jpg" ".*mp4" ".*gif" ".*tmp/lua.*"
+      ".*agenda/.*" ".*mod/.*" ".*lib/.*" ".*ext/.*"
+      ".*_db"))
   :bind (("C-x C-k C-x C-k" . kill-emacs)
          ("C-x B" . ibuffer)
          ("M-z" . zap-up-to-char)
@@ -36,7 +45,7 @@
   (auto-save-default nil)
   (auto-save-interval 200)
   (auto-save-timeout 20)
-  (history-length 25)
+  (history-length 1000)
   (auto-save-list-file-prefix nil)
   (backup-directory-alist `(("." . ,backup-directory)))
   (recentf-save-file (concat user-cache-directory "recentf"))
@@ -55,18 +64,13 @@
   (auth-sources `(,(concat sync-directory ".authinfo.gpg") "~/.authinfo.gpg" "~/.authinfo"))
   (custom-file (expand-file-name "custom.el" user-emacs-directory))
   :config
-  (setq history-excluded-filetypes '(".*gz" ".*pdf" "bookmarks" "recentf" "init.el"
-                                     ".*gitignore" "early-init.el" ".*log" ".*png"
-                                     ".*jpg" ".*mp4" ".*gif" ".*tmp/lua.*"
-                                     ".*agenda/.*" ".*mod/.*" ".*lib/.*" ".*ext/.*"
-                                     ".*_db"))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (recentf-mode 1)
   (savehist-mode 1)
   (run-at-time nil (* 5 60) 'recentf-save-list)
   (global-auto-revert-mode 1)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (add-hook 'shell-mode-hook 'rc/truncate-lines-off)
+  (add-hook 'shell-mode-hook 'rc/truncate-lines-on)
   
   (when (file-exists-p custom-file)
     (load custom-file))
@@ -102,7 +106,6 @@
   (calendar-longitude -77.1)
   (calendar-mark-diary-entries-flag t)
   (calendar-mark-holidays-flag t)
-  (holiday-bahai-holidays nil)
   (holiday-bahai-holidays nil)
   (holiday-hebrew-holidays nil)
   (holiday-islamic-holidays nil))

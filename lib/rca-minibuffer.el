@@ -6,7 +6,7 @@
   :init
   (vertico-mode)
   :custom
-  (vertico-cicle t)
+  (vertico-cycle t)
   (vertico-count 12))
 
 (use-package orderless

@@ -1,0 +1,13 @@
+eln-cache/
+cache/
+tree-sitter/
+auto-save-list/
+elpa/
+elpaca/
+url/
+img/
+
+
+tramp
+diary
+nov-places

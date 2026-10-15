@@ -107,17 +107,17 @@ If POSITION is nil appends to the beginning of each element."
          word))
      raw)))
 
-(defun rc/truncate-lines-off ()
+(defun rc/truncate-lines-on ()
   "Command to set truncate-lines to t in mode hooks"
   (setq truncate-lines t))
 
 (defun rc/export-code-block-for-message (start end)
   "Copy current region and format it to a markdown codeblock"
   (interactive "r")
-  (setq code-block (buffer-substring start end))
-  (setq code-block-formatted (concat "```\n" code-block "```"))
-  (deactivate-mark)
-  (kill-new code-block-formatted))
+  (let* ((code-block (buffer-substring start end))
+         (code-block-formatted (concat "```\n" code-block "```")))
+    (deactivate-mark)
+    (kill-new code-block-formatted)))
 
 (defun line-contains? (string)
   (s-contains? string

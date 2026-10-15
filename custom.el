@@ -84,9 +84,6 @@
      (eval add-hook 'after-save-hook (lambda nil (org-babel-detangle)) nil t)
      (ispell-dictionary . "en_US")))
  '(sentence-end "[a-z0-9)}][.:?][ ]")
- '(spacious-padding-subtle-frame-lines
-   '(:mode-line-active spacious-padding-subtle-mode-line-active :mode-line-inactive
-                       spacious-padding-subtle-mode-line-inactive) nil nil "Customized with use-package spacious-padding")
  '(texmathp-tex-commands '(("alignedcase" env-on)))
  '(undo-tree-incompatible-major-modes '(image-mode term-mode))
  '(warning-minimum-level :error))

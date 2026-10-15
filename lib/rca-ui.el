@@ -17,12 +17,12 @@
   (indent-tabs-mode nil)
   (display-line-numbers-width 3)
   (display-line-numbers-grow-only t)
-  (tab-bar-format '(tab-bar-format-history
-                    tab-bar-format-tabs-groups
-                    tab-bar-separator
-                    tab-bar-format-add-tab
-                    tab-bar-format-align-right
-                    tab-bar-format-global))
+  ;; (tab-bar-format '(tab-bar-format-history
+  ;;                   tab-bar-format-tabs-groups
+  ;;                   tab-bar-separator
+  ;;                   tab-bar-format-add-tab
+  ;;                   tab-bar-format-align-right
+  ;;                   tab-bar-format-global))
   :config
   (add-hook 'after-make-frame-functions
             (lambda (frame)
@@ -177,7 +177,6 @@ names an existing file."
 	  (expand-file-name argi command-line-default-directory)))))
 
 (add-hook 'command-line-functions #'my-inhibit-startup-screen-file)
-(setq command-line-functions #'my-inhibit-startup-screen-file)
 
 (use-package dashboard
   :ensure t
@@ -190,10 +189,11 @@ names an existing file."
       (revert-buffer)))
   ;; Files don't open from command line if this is in init
   ;; TODO Check if there is any other problem in this section
-  :init
-  (setq banner-images
-        (directory-files (locate-user-emacs-file "img") t ".*g$"))
-  (setq banner-image-size (if (equal system-name "acer") 500 550))
+  ;; Defined here (before :custom runs) so the :custom values below can
+  ;; reference them.
+  (defvar banner-images
+    (directory-files (locate-user-emacs-file "img") t ".*g$"))
+  (defvar banner-image-size (if (equal system-name "acer") 500 550))
   :hook
   ;; (elpaca-after-init . dashboard-insert-startupify-lists)
   ;; (elpaca-after-init . dashboard-initialize)
@@ -260,9 +260,9 @@ names an existing file."
   (tab-bar-tab-hints t)
   (tab-bar-auto-width nil)
   (tab-bar-separator " ")
-  (tab-bar-format '(tab-bar-format-tabs-groups
-		    Tab-bar-format-tabs tab-bar-separator
-		    tab-bar-format-add-tab))
+  ;; (tab-bar-format '(tab-bar-format-tabs-groups
+  ;;       	    tab-bar-format-tabs tab-bar-separator
+  ;;       	    tab-bar-format-add-tab))
   :init
   ;;; --- OPTIONAL INTERNAL FN OVERRIDES TO DECORATE NAMES
   (defun tab-bar-tab-name-format-hints (name _tab i)

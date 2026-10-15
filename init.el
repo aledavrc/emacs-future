@@ -7,6 +7,7 @@
 
 (require 'rca-variables)
 (require 'rca-functions)
+(require 'rca-macros)
 (require 'rca-ui)
 (require 'rca-emacs)
 (require 'rca-org)

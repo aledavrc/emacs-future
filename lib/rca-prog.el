@@ -28,7 +28,6 @@
   :ensure nil
   :config
   (setq auto-mode-alist (cons '("\\.pl$" . prolog-mode) auto-mode-alist))
-  (setq load-path (cons "/usr/sbin/swipl" load-path))
   (setq prolog-system 'swi)
   ;; (autoload 'run-prolog "prolog" "Start a Prolog sub-process." t)
   ;; (autoload 'prolog-mode "prolog" "Major mode for editing Prolog programs." t)
@@ -74,7 +73,7 @@
 (use-package python-mode
   :ensure nil
   :defer t
-  :bind-keymap (("C-c v" . python-set-venv))
+  :bind (("C-c v" . python-set-venv))
   :init
   (defun python-set-venv (interpreter)
     (interactive "fPython interpreter:")

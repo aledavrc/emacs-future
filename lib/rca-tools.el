@@ -449,7 +449,7 @@ For more on chathistory, see:
 
 (use-package quarto-mode
   :ensure t
-  :mode ("\\.Rmd" . poly-quarto-mode))
+  :mode ("\\.Rmd\\'" . poly-quarto-mode))
 
 (use-package ess
   :ensure t)
