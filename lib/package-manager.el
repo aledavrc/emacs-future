@@ -40,6 +40,11 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
+;; Emacs 32 ships compat built-in (newer than ELPA's). Let Elpaca use it and
+;; stop installing/activating its own copy (avoids "compat loaded before
+;; Elpaca activation").
+(add-to-list 'elpaca-ignored-dependencies 'compat)
+
 (elpaca elpaca-use-package
   (elpaca-use-package-mode))
 

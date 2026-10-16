@@ -247,7 +247,11 @@ input"
          (pdf-view-mode . pdf-view-themed-minor-mode)
          (pdf-view-mode . pdf-sync-minor-mode))
   :init
-  (pdf-tools-install)
+  ;; Elpaca builds the helper into <builds>/pdf-tools/server/, but pdf-tools
+  ;; only probes the build root and ../server, so point it at the real binary.
+  (setq pdf-info-epdfinfo-program
+        (expand-file-name "pdf-tools/server/epdfinfo" elpaca-builds-directory))
+  (pdf-tools-install :no-query)
   :custom
   (pdf-view-display-size 'fit-page "Fit to page by default")
   (pdf-annot-activate-created-annotations t "Activate annotations")
