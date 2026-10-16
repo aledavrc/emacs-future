@@ -167,7 +167,7 @@
 ;;   :config
 ;;   (spacious-padding-mode t))
 
-(defun my-inhibit-startup-screen-file ()
+(defun rc/inhibit-startup-screen-file ()
   "Startup screen inhibitor for `command-line-functions`.
 Inhibits startup screen on the first unrecognised option which
 names an existing file."
@@ -176,7 +176,7 @@ names an existing file."
 	 (file-exists-p
 	  (expand-file-name argi command-line-default-directory)))))
 
-(add-hook 'command-line-functions #'my-inhibit-startup-screen-file)
+(add-hook 'command-line-functions #'rc/inhibit-startup-screen-file)
 
 (use-package dashboard
   :ensure t
@@ -215,7 +215,7 @@ names an existing file."
                                   (nil "Notes" "Open note directory"
                                        (lambda (&rest _) (dired denote-directory)))
                                   (nil "Ideas" "Open ideas notebook"
-                                       (lambda (&rest _) (find-file my/org-idea-notebook))))))
+                                       (lambda (&rest _) (find-file rc/org-idea-notebook))))))
   (dashboard-image-banner-max-height banner-image-size)
   (dashboard-startupify-list '(dashboard-insert-banner
                                dashboard-insert-newline

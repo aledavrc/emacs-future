@@ -70,7 +70,6 @@ input"
     (prettify-symbols-mode)
     (turn-on-cdlatex)
     (outline-minor-mode)  
-    ;; (rc/auctex-macros)
     (TeX-source-correlate-mode t)
     (tex-fold-mode 1)
     (TeX-PDF-mode t)
@@ -106,8 +105,9 @@ input"
                 TeX-view-program-selection '((output-pdf "PDF Tools")))
 
   ;; LaTeX math delimiters functions
+  ;; Adapted from Doom-style AUCTeX snippets (math delimiter toggling).
 
-  (defun +TeX--modify-math-delimiters (open-replacement close-replacement)
+  (defun ext/tex--modify-math-delimiters (open-replacement close-replacement)
     (when (string-equal (match-string 0) "\\[")
       (replace-match open-replacement)
       (re-search-forward "\\\\\\]")
@@ -117,7 +117,7 @@ input"
       (re-search-forward "\\\\)")
       (replace-match close-replacement)))
 
-  (defun +TeX-remove-math-delimiters ()
+  (defun ext/tex-remove-math-delimiters ()
     "Removes math delimiters from the math block at point"
     (interactive)
     (unless (texmathp) (user-error "Not in math expression"))
@@ -126,21 +126,21 @@ input"
           (progn
             (LaTeX-mark-environment)
             (re-search-forward "\\\\\\[\\|\\\\(" (region-end) t)
-            (+TeX--modify-math-delimiters "" ""))
+            (ext/tex--modify-math-delimiters "" ""))
         (re-search-backward "\\\\\\[\\|\\\\(")
-        (+TeX--modify-math-delimiters "" ""))))
+        (ext/tex--modify-math-delimiters "" ""))))
   
-  (defun +TeX-change-math-delimiter ()
+  (defun ext/tex-change-math-delimiter ()
     (interactive)
     (unless (texmathp) (user-error "Not in math expression"))
     (save-excursion
       (re-search-backward "\\\\\\[\\|\\\\(")
       (when (string-equal (match-string 0) "\\[")
-        (+TeX--modify-math-delimiters "\\\\(" "\\\\)"))
+        (ext/tex--modify-math-delimiters "\\\\(" "\\\\)"))
       (when (string-equal (match-string 0) "\\(")
-        (+TeX--modify-math-delimiters "\\\\[" "\\\\]"))))
+        (ext/tex--modify-math-delimiters "\\\\[" "\\\\]"))))
 
-  (defun +Tex-mark-math-block ()
+  (defun ext/tex-mark-math-block ()
     (interactive)
     (unless (texmathp) (user-error "Not in math expression"))
     (re-search-backward "\\\\\\[\\|\\\\(")
@@ -151,19 +151,19 @@ input"
       (re-search-forward "\\\\)")))
   
   ;; Math block minor mode
-  (defun +LaTeX-math-texmathp () t)
-  (defun +LaTeX-math-texmathp-advice (fun)
+  (defun ext/texmathp-always () t)
+  (defun ext/texmathp-advice (fun)
     (if LaTeX-math-block-mode
-        (+LaTeX-math-texmathp)
+        (ext/texmathp-always)
       (funcall fun)))
   
   (define-minor-mode LaTeX-math-block-mode
     "Mode for entering math blocks in external programs."
     :lighter " Math Block"
     :keymap `(
-              (,(kbd "C-x C-s") . +save-n-kill-buffer-delete-frame)
+              (,(kbd "C-x C-s") . rc/save-n-kill-buffer-delete-frame)
               )
-    (advice-add 'texmathp :around #'+LaTeX-math-texmathp-advice)))
+    (advice-add 'texmathp :around #'ext/texmathp-advice)))
 
 (use-package cdlatex
   :ensure t

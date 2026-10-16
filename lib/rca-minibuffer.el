@@ -44,9 +44,9 @@
   :config
   (defun consult-idea (&optional match scope)
     (interactive)
-    (unless my/org-idea-notebook
+    (unless rc/org-idea-notebook
       (user-error "No ideas file"))
-    (consult-org-heading match (list my/org-idea-notebook)))
+    (consult-org-heading match (list rc/org-idea-notebook)))
 
   (consult-customize consult-idea :preview-key nil)
   (consult-customize consult-recent-file :preview-key nil)

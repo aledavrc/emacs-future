@@ -91,13 +91,15 @@
   :ensure t
   :init
   ;; Make dabbrev use the correct case
-  (defun my-cape--dabbrev-fix-expansion (expansion)
+  ;; Adapted from a `cape--dabbrev-list' override circulated in the
+  ;; cape/corfu community (restricts dabbrev to same-major-mode buffers).
+  (defun ext/cape--dabbrev-fix-expansion (expansion)
     "Return the downcased EXPANSION.
  Removes trailing non-alphanumeric characters if present."
     (let ((downcased (downcase expansion)))
       (substring downcased 0 (string-match-p "[^[:alnum:]]+$" downcased))))
   
-  (defun my-cape--dabbrev-list (input)
+  (defun ext/cape--dabbrev-list (input)
     "Find all dabbrev expansions for INPUT. "
     (cape--silent
       ;; Don't search all buffers. Only those with the same major-mode.
@@ -106,12 +108,12 @@
         (dabbrev--reset-global-variables))
       (cons
        (apply-partially #'string-prefix-p input)
-       (cl-loop for w in (mapcar #'my-cape--dabbrev-fix-expansion
+       (cl-loop for w in (mapcar #'ext/cape--dabbrev-fix-expansion
                                  (dabbrev--find-all-expansions input t))
                 if (>= (length w) cape-dabbrev-min-length) collect
                 (cape--case-replace t input w)))))
 
-  (advice-add 'cape--dabbrev-list :override #'my-cape--dabbrev-list)
+  (advice-add 'cape--dabbrev-list :override #'ext/cape--dabbrev-list)
 
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-keyword)

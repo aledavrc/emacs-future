@@ -39,7 +39,9 @@
   (setq org-yank-image-file-name-function 'org-yank-image-denote-file-name-function)
 
   
-  (defun my-remove-accents (text)
+  ;; Adapted from the denote community sluggify recipe (accent stripping
+  ;; via combining diacritical marks).
+  (defun ext/remove-accents (text)
     (let ((slug-trim-chars '(;; Combining Diacritical Marks https://www.unicode.org/charts/PDF/U0300.pdf
                              768 ; U+0300 COMBINING GRAVE ACCENT
                              769 ; U+0301 COMBINING ACUTE ACCENT
@@ -69,14 +71,14 @@
                 (seq-remove #'nonspacing-mark-p
                             (string-glyph-decompose text)))))))
 
-  (defun my/denote-sluggify-title (str)
+  (defun ext/denote-sluggify-title (str)
     (downcase
      (denote-slug-hyphenate
-      (my-remove-accents
+      (ext/remove-accents
        (replace-regexp-in-string "[][{}!@#$%^&*()+'\"?,.\|;:~`‘’“”/=]*" "" str)))))
 
   (setq denote-file-name-slug-functions
-        '((title . my/denote-sluggify-title)
+        '((title . ext/denote-sluggify-title)
           (signature . denote-sluggify-signature)
           (keywords . denote-sluggify-keywords)))
 
@@ -101,13 +103,13 @@
   :ensure t
   :bind (("C-c o" . embark-act)
          :map embark-general-map
-         ("G" . +embark-google-search)
+         ("G" . rc/embark-google-search)
          :map embark-url-map
-         ("M" . +org-link-remote-open-in-mpv)
+         ("M" . rc/org-link-remote-open-in-mpv)
          :map embark-file-map
-         ("M" . +org-link-open-in-mpv))
+         ("M" . rc/org-link-open-in-mpv))
   :init
-  (defun +embark-google-search (term)
+  (defun rc/embark-google-search (term)
     (interactive "sSearch Term: ")
     (browse-url (format "https://google.com/search?q=%s" term)))
   :config
@@ -138,31 +140,31 @@
     (setq citar-file-note-extensions '("org")
           citar-library-file-extensions '("pdf")
           citar-bibliography org-cite-global-bibliography))
-  (defcustom +citar-remote-library-path nil "Remote path that contains the library"
+  (defcustom rc/citar-remote-library-path nil "Remote path that contains the library"
     :type '(string))
-  (defcustom +citar-library-server nil "Remote library ssh server"
+  (defcustom rc/citar-library-server nil "Remote library ssh server"
     :type '(string))
-  (defcustom +citar-library-port nil "Remote library ssh server port"
+  (defcustom rc/citar-library-port nil "Remote library ssh server port"
     :type '(string))
-  (defcustom +citar-local-library-path nil "Local path that contains the library"
+  (defcustom rc/citar-local-library-path nil "Local path that contains the library"
     :type '(string))
-  (defun +citar-insert-title (citekey)
+  (defun rc/citar-insert-title (citekey)
     "Inserts the title of the currently selected entry to the buffer"
     (insert (citar-get-value "title" citekey)))
-  (defun +citar-open-file-externally (citekey)
+  (defun rc/citar-open-file-externally (citekey)
     "Opens associated file in the default system reader"
     (let ((file (car (car (hash-table-values (citar-get-files citekey))))))
       (if file (start-process "open pdf" nil "xdg-open" file)
         (message "No pdf file found with this citekey"))))
-  (defun +citar-scholar-search (citekey)
+  (defun rc/citar-scholar-search (citekey)
     "Search the entry in google scholar"
     (browse-url (format "https://scholar.google.com/scholar?q=%s"
                         (citar-get-value "title" citekey))))
-  (defun +citar-download-file (citekey)
+  (defun rc/citar-download-file (citekey)
     "Downloads file from the remote server and stores it in the library"
     (start-process "citar-download-file" nil "download-from-archive"
-                   +citar-library-server +citar-library-port
-                   +citar-remote-library-path citekey +citar-local-library-path)))
+                   rc/citar-library-server rc/citar-library-port
+                   rc/citar-remote-library-path citekey rc/citar-local-library-path)))
 
 (use-package citar-embark
   :ensure t
@@ -170,14 +172,14 @@
   :after (citar embark)
   :defer nil
   :bind (:map citar-embark-map
-              ("g" . +citar-scholar-search)
-              ("d" . +citar-download-file)
-              ("i" . +citar-insert-title)
-              ("F" . +citar-open-file-externally)
+              ("g" . rc/citar-scholar-search)
+              ("d" . rc/citar-download-file)
+              ("i" . rc/citar-insert-title)
+              ("F" . rc/citar-open-file-externally)
               :map citar-embark-citation-map
-              ("g" . +citar-scholar-search)
-              ("d" . +citar-download-file)
-              ("F" . +citar-open-file-externally))
+              ("g" . rc/citar-scholar-search)
+              ("d" . rc/citar-download-file)
+              ("F" . rc/citar-open-file-externally))
   :config
   (citar-embark-mode))
 
@@ -190,9 +192,9 @@
   (ebib-file-search-dirs '("~/Files/Documents/library/articles" "~/Files/Documents/library/books"))
   (ebib-file-associations '(("ps" . "gv")))
   :config
-  (define-key ebib-index-mode-map (kbd "O") '+ebib-open-file-externally)
-  (define-key ebib-index-mode-map (kbd "L") '+ebib-scholar-search)
-  (defun +ebib-open-file-externally () ; Maybe I can define args?
+  (define-key ebib-index-mode-map (kbd "O") 'rc/ebib-open-file-externally)
+  (define-key ebib-index-mode-map (kbd "L") 'rc/ebib-scholar-search)
+  (defun rc/ebib-open-file-externally () ; Maybe I can define args?
     (interactive)
     (let* ((file (ebib-get-field-value "file" (ebib--get-key-at-point) ebib--cur-db t 'unbraced))
            (filename (if file (ebib--expand-file-name file)
@@ -200,7 +202,7 @@
       (if filename
           (start-process "open pdf" nil "xdg-open" filename)
         (message "No PDF file found with this citekey"))))
-  (defun +ebib-scholar-search ()
+  (defun rc/ebib-scholar-search ()
     (interactive)
     (browse-url (format "https://scholar.google.com/scholar?q=%s"
                         (ebib-get-field-value "title" (ebib--get-key-at-point) ebib--cur-db nil t)))))
@@ -225,8 +227,8 @@
       (when (plist-get info :id)
         (puthash (plist-get info :id) id alert-notifications-ids)))
     (alert-message-notify info))
-  (alert-define-style 'rc-style :title "My custom style" :notifier 'rc/alert-notifications-notify)
-  (setq alert-default-style 'rc-style)
+  (alert-define-style 'rc/alert-style :title "My custom style" :notifier 'rc/alert-notifications-notify)
+  (setq alert-default-style 'rc/alert-style)
 
   ;; Short reminder commands
   (defun short-reminder (time message)
@@ -254,7 +256,7 @@
 (use-package 0x0
   :ensure t
   :config
-  (defun +htmlize-buffer-with-theme (theme)
+  (defun rc/htmlize-buffer-with-theme (theme)
     (load-theme theme t)
     (write-file (buffer-name (htmlize-buffer (current-buffer) t)) nil)
     (when (car (cdr custom-enabled-themes))
@@ -262,17 +264,17 @@
       (disable-theme theme))
     (kill-buffer))
 
-  (defun +htmlize-buffer-dark-theme ()
+  (defun rc/htmlize-buffer-dark-theme ()
     (interactive)
-    (+htmlize-buffer-with-theme (car (cdr (cdr (assoc theme-character themes))))))
+    (rc/htmlize-buffer-with-theme (car (cdr (cdr (assoc theme-character themes))))))
 
-  (defun +htmlize-buffer-light-theme ()
+  (defun rc/htmlize-buffer-light-theme ()
     (interactive)
-    (+htmlize-buffer-with-theme (car (cdr (assoc theme-character themes)))))
+    (rc/htmlize-buffer-with-theme (car (cdr (assoc theme-character themes)))))
 
-  (defun +0x0-htmlize-and-send ()
+  (defun rc/0x0-htmlize-and-send ()
     (interactive)
-    (+htmlize-buffer-dark-theme)
+    (rc/htmlize-buffer-dark-theme)
     (let* ((server (0x0--choose-server))
            (file-name (expand-file-name (concat (buffer-name) ".html")))
            (size (file-attribute-size (file-attributes file-name)))
@@ -438,11 +440,11 @@ For more on chathistory, see:
   :ensure t
   :mode ("\\.epub\\'" . nov-mode)
   :init
-  (defun +nov-olivetti-mode ()
+  (defun rc/nov-olivetti-mode ()
     (setq olivetti-body-width 130)
     (olivetti-mode))
   :config
-  (add-hook 'nov-mode-hook '+nov-olivetti-mode))
+  (add-hook 'nov-mode-hook 'rc/nov-olivetti-mode))
 
 ;; (use-package ultra-scroll
 ;;   :ensure t)

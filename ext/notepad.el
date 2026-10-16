@@ -117,52 +117,8 @@ command. So the following works as expected:
         (message "Dictionary file does not exist.")))))
 
 ;;;; TABLE TO COMM DIAG CONVERSION
-
-(defvar org-table-replacement-alist
-  '(("v" . "\\\\downarrow")
-    ("^" . "\\\\uparrow")
-    (">" . "\\\\xrightarrow")
-    ("<" . "\\\\xleftarrow")
-    ("<>" . "\\\\xrightleftharpoons")
-    ("q" . "\\\\quad"))
-  "List of values replaced in org-table custom export
-commands")
-
-(defun org-table-to-commutative-diagram ()
-  (interactive)
-  (unless (org-at-table-p) (user-error "Not at a table"))
-  (mapc (lambda (x)
-          (replace-regexp-in-region
-           (concat "~" (car x) "~") (cdr x) (org-table-begin) (org-table-end)))
-        org-table-replacement-alist)
-  (let* ((table (org-table-to-lisp))
-         (params '(:backend latex :raw t :environment "array"))
-         (replacement-table
-          (replace-regexp-in-string
-           "  +" " "
-           (replace-regexp-in-string
-            "{array}{\\(l+\\)}"
-            (lambda (match) (concat "{array}{" (make-string (- (length match) 9) ?c) "}")) (orgtbl-to-latex table params)))))
-    (kill-region (org-table-begin) (org-table-end))
-    (open-line 1)
-    (push-mark)
-    (insert "\\[" replacement-table "\\]")))
-
-(defun org-table-from-latex-table ()
-  (interactive)
-  (search-backward "\[")
-  (kill-whole-line)
-  (set-mark (point))
-  (search-forward "\]")
-  (kill-whole-line)
-  (backward-char)
-  (activate-mark)
-  (let ((beg (region-beginning))
-        (end (region-end)))
-    (replace-regexp-in-region "^\\|\\\\\\\\\\|&" "|" beg end)
-    (goto-char beg)
-    (org-table-next-field)))
-
+;; Moved to lib/rca-org.el as rc/org-table-to-commutative-diagram
+;; and rc/org-table-from-latex-table.
 (defun org-table-test ()
   (interactive)
   (message (orgtbl-to-latex (org-table-to-lisp) '(:backend latex :raw t :environment "array"))))
@@ -197,20 +153,20 @@ commands")
 ;; BETTER SCREENSHOTS
 ;; [[https://mbork.pl/2025-12-15_Improving_Emacs_screenshots][Source]]
 
-(defvar frameshot-format 'png
+(defvar ext/frameshot-format 'png
   "Default frame shot format.")
 
-(defun frameshot (filename width)
+(defun ext/frameshot (filename width)
   "Save Emacs frame as frame shot."
   (interactive (list (read-file-name
                       "Frameshot file: "
                       nil nil nil
                       (concat (format-time-string
                                "Screenshot-%Y-%m-%d-%T.")
-                              (symbol-name frameshot-format)))
+                              (symbol-name ext/frameshot-format)))
                      (read-string "Rescale to [px]: ")))
   (with-temp-file filename
-    (insert (x-export-frames nil (or frameshot-format 'png))))
+    (insert (x-export-frames nil (or ext/frameshot-format 'png))))
   (when width
       (shell-command (format "mogrify -resize %s %s" width filename)))
   (message "Frameshot saved as `%s'" filename))

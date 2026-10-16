@@ -26,7 +26,7 @@
          ("M-o" . other-window)
          ("C-c P" . find-file-at-point)
          ("C-x K" . (lambda () (interactive) (kill-buffer (current-buffer))))
-         ("C-z K" . +save-n-kill-buffer-delete-frame)
+         ("C-z K" . rc/save-n-kill-buffer-delete-frame)
          ("C-x C-c" . nil)
          ("C-h h" . nil)
          ("M-`" . nil)
@@ -79,7 +79,7 @@
   (when (not (file-exists-p backup-directory))
     (make-directory backup-directory))
   
-  (defun +save-n-kill-buffer-delete-frame ()
+  (defun rc/save-n-kill-buffer-delete-frame ()
     (interactive)
     (save-buffer)
     (kill-buffer (current-buffer))

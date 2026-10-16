@@ -171,7 +171,7 @@ If POSITION is nil appends to the beginning of each element."
         (message "Code block content copied"))
     (user-error "Not inside an Org source block")))
 
-(defun +diary-schedule-class (start-month start-day end-month end-day year days-of-week)
+(defun rc/diary-schedule-class (start-month start-day end-month end-day year days-of-week)
   (and (diary-block start-month start-day year
                     end-month end-day year)
        (or (cl-some (lambda (p) (= p (calendar-day-of-week date)))
