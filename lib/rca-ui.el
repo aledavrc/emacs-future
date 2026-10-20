@@ -93,7 +93,7 @@
         '((parsee ef-reverie ef-elea-dark)
           (yuuma ef-tritanopia-light ef-rosa)
           (nazrin2 ef-light ef-owl)
-          (utsuho ef-arcadia ef-elea-dark)
+          (utsuho au-whispergrove-morning au-whispergrove-night)
           (youmu ef-elea-light ef-elea-dark)
           (tsukasa ef-eagle ef-dream)
           (satori ef-tritanopia-light ef-trio-dark)))
@@ -107,6 +107,11 @@
           (agenda-date . (1.3))
           (agenda-structure . (1.8))
           (t . (1.1)))))
+
+(use-package au-themes
+  :vc (:url "https://github.com/szymonwilczek/au-themes")
+  :config
+  (load-theme 'au-salina-night t))
 
 (use-package circadian
   :ensure t
