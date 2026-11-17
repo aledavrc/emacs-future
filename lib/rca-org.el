@@ -4,6 +4,7 @@
 (use-package org
   :ensure nil
   :bind (("C-z C-a" . org-agenda)
+         ("C-z o" . rc/org-scratch-buffer)
          :map org-mode-map
          ("C-c C-x 1" . rc/org-update-idea)
          ("C-c C-v c" . rc/copy-org-src-block-content)
@@ -316,3 +317,41 @@ are exported to a filename derived from the headline text."
                    #'ext/org-latex-preview-center)
       (remove-hook 'org-latex-preview-overlay-open-functions
                    #'ext/org-latex-preview-uncenter))))
+
+;;; Org scratch buffer for quick notes
+
+(defcustom rc/org-scratch-buffer-name "*org-scratch*"
+  "Name of the Org scratch buffer used for quick notes."
+  :type 'string)
+
+(defun rc/org-scratch--prepare (buffer)
+  "Turn BUFFER into an Org scratch buffer and return it."
+  (with-current-buffer buffer
+    (unless (derived-mode-p 'org-mode)
+      (org-mode))
+    ;; Like `*scratch*', never ask to save this buffer when Emacs exits.
+    (setq-local buffer-offer-save nil))
+  buffer)
+
+(defun rc/org-scratch--fresh-buffer ()
+  "Create and return a new, uniquely named Org scratch buffer."
+  (rc/org-scratch--prepare
+   (generate-new-buffer rc/org-scratch-buffer-name)))
+
+(defun rc/org-scratch-buffer (&optional new)
+  "Switch to the Org scratch buffer for taking quick notes.
+When NEW is non-nil (with a prefix argument), create a fresh notes
+buffer instead of reusing the default one."
+  (interactive "P")
+  (switch-to-buffer
+   (if new
+       (rc/org-scratch--fresh-buffer)
+     (rc/org-scratch--prepare (get-buffer-create rc/org-scratch-buffer-name)))))
+
+(defun rc/org-scratch-buffer-in-background ()
+  "Create the Org scratch buffer without displaying it.
+This makes the buffer available at startup for quick notes while
+leaving the current window, such as the dashboard, untouched."
+  (rc/org-scratch--prepare (get-buffer-create rc/org-scratch-buffer-name)))
+
+(add-hook 'emacs-startup-hook #'rc/org-scratch-buffer-in-background)

@@ -6,7 +6,7 @@
  ;; If there is more than one, they won't work right.
  '(rc/citar-library-port "2222")
  '(rc/citar-library-server "ubuntu@rcaled.mooo.com")
- '(rc/citar-local-library-path "/home/rcaled/Files/Documents/library-test")
+ '(rc/citar-local-library-path "/home/rcaled/Media/Books")
  '(rc/citar-remote-library-path "Files/Documents/library")
  '(bibtex-files
    '("/home/rcaled/.sync/archive/articles.bib"
@@ -74,7 +74,7 @@
      ("subsubsection" . 4) ("paragraph" . 5) ("subparagraph" . 6)
      ("addchap" . -1) ("addsec" . -2) ("frametitle" . -2)))
  '(safe-local-variable-directories
-   '("/home/rcaled/Files/Documents/college/computacion-grafica/opengl-examples/"))
+   '("/home/rcaled/Projects/own/grafica-sterben/"))
  '(safe-local-variable-values
    '((compile-command format "make -k run-%s"
                       (file-name-nondirectory buffer-file-name))

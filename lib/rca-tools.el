@@ -130,12 +130,12 @@
   (org-cite-follow-processor 'citar)
   (org-cite-activate-processor 'citar)
   :config
-  (let ((documents-path (xdg-user-dir "DOCUMENTS"))
+  (let ((books-path (expand-file-name "~/Media/Books/"))
         (archive-path (concat sync-directory "archive/bibliography/")))
     (setq org-cite-global-bibliography
           (mapcar (lambda (entry) (concat archive-path entry)) '("articles.bib" "books.bib")))
     (setq citar-library-paths
-          (mapcar (lambda (entry) (concat documents-path entry)) '("/library/articles/" "/library/books/"))
+          (list (concat books-path "articulos/") books-path)
           citar-notes-paths (list (concat archive-path "bibnotes/")))
     (setq citar-file-note-extensions '("org")
           citar-library-file-extensions '("pdf")
@@ -189,7 +189,7 @@
   :bind (("C-z c b" . ebib))
   :custom
   (ebib-preload-bib-files (mapcar (lambda (file) (concat sync-directory "archive/bibliography/" file)) '("articles.bib" "books.bib" "discarded.bib")))
-  (ebib-file-search-dirs '("~/Files/Documents/library/articles" "~/Files/Documents/library/books"))
+  (ebib-file-search-dirs '("~/Media/Books/articulos" "~/Media/Books"))
   (ebib-file-associations '(("ps" . "gv")))
   :config
   (define-key ebib-index-mode-map (kbd "O") 'rc/ebib-open-file-externally)

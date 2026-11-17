@@ -23,7 +23,7 @@
   :defer t
   :custom
   (skeletor-user-directory (concat sync-directory "templates/skeletons/"))
-  (skeletor-project-directory "~/Files/Documents/workspace/")
+  (skeletor-project-directory "~/Projects/own/")
   (skeletor-completing-read-function 'completing-read)
   :config
   (skeletor-define-template "latex-article"
